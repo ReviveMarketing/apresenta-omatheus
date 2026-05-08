@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReVive · Indicadores BSC</title>
+  <meta name="description" content="Dashboard executivo de indicadores comerciais e de marketing." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/main.css" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22none%22 stroke=%22%2300ff9d%22 stroke-width=%223%22/><circle cx=%2250%22 cy=%2250%22 r=%224%22 fill=%22%2300ff9d%22/></svg>" />
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader" class="loader">
+    <div class="loader__inner">
+      <svg class="loader__ring" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2"/>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="60 280" stroke-linecap="round"/>
+      </svg>
+      <span class="loader__text">REVIVE / BSC</span>
+    </div>
+  </div>
+
+  <!-- Background grid + glow -->
+  <div class="bg-layer">
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow--1"></div>
+    <div class="bg-glow bg-glow--2"></div>
+    <div class="bg-noise"></div>
+  </div>
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar__left">
+      <div class="brand">
+        <div class="brand__mark">
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+            <circle cx="16" cy="16" r="8" stroke="currentColor" stroke-width="1.2" opacity="0.7"/>
+            <circle cx="16" cy="16" r="3" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="brand__text">
+          <span class="brand__name">ReVive</span>
+          <span class="brand__sub">Indicadores BSC</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="topbar__nav">
+      <button class="nav-btn is-active" data-tab="overview">
+        <span class="nav-btn__dot"></span>Visão Geral
+      </button>
+      <button class="nav-btn" data-tab="commercial">
+        <span class="nav-btn__dot"></span>Comercial
+      </button>
+      <button class="nav-btn" data-tab="partners">
+        <span class="nav-btn__dot"></span>Comercial Parceiros
+      </button>
+      <button class="nav-btn" data-tab="consultants">
+        <span class="nav-btn__dot"></span>Consultores
+      </button>
+      <button class="nav-btn" data-tab="marketing">
+        <span class="nav-btn__dot"></span>Marketing
+      </button>
+      <button class="nav-btn" data-tab="compare">
+        <span class="nav-btn__dot"></span>Comparativo
+      </button>
+      <button class="nav-btn" data-tab="globe">
+        <span class="nav-btn__dot"></span>Mapa de Fechamentos
+      </button>
+    </nav>
+
+    <div class="topbar__right">
+      <div class="period-selector">
+        <label>Mês de referência</label>
+        <select id="month-selector" class="select">
+          <option value="0">Janeiro</option>
+          <option value="1">Fevereiro</option>
+          <option value="2">Março</option>
+          <option value="3">Abril</option>
+          <option value="4">Maio</option>
+          <option value="5">Junho</option>
+          <option value="6">Julho</option>
+          <option value="7">Agosto</option>
+          <option value="8">Setembro</option>
+          <option value="9">Outubro</option>
+          <option value="10">Novembro</option>
+          <option value="11">Dezembro</option>
+        </select>
+      </div>
+
+      <div class="period-selector">
+        <label>Ano</label>
+        <select id="year-selector" class="select">
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+      </div>
+
+      <button class="icon-btn" id="btn-edit" title="Editar dados">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span>Editar</span>
+      </button>
+
+      <button class="icon-btn" id="btn-export" title="Exportar JSON">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+
+      <button class="icon-btn" id="btn-import" title="Importar JSON">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </button>
+      <input type="file" id="import-input" accept=".json" hidden />
+
+      <button class="theme-toggle" id="theme-toggle" title="Alternar tema claro/escuro">
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="4.5"/>
+          <line x1="12" y1="2" x2="12" y2="4"/>
+          <line x1="12" y1="20" x2="12" y2="22"/>
+          <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
+          <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+          <line x1="2" y1="12" x2="4" y2="12"/>
+          <line x1="20" y1="12" x2="22" y2="12"/>
+          <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/>
+          <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+        </svg>
+      </button>
+
+      <div class="status-led">
+        <span class="status-led__dot"></span>
+        <span class="status-led__text">LIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+
+    <!-- ============= TAB: OVERVIEW (cockpit) ============= -->
+    <section class="tab tab--overview is-active" data-tab-panel="overview">
+
+      <!-- Toggle de escopo: Mês atual vs Acumulado -->
+      <div class="overview-scope">
+        <div class="overview-scope__inner">
+          <span class="overview-scope__label">Mostrando dados de:</span>
+          <div class="overview-scope__toggle">
+            <button class="overview-scope__btn is-active" data-scope="month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Mês selecionado
+              <span class="overview-scope__badge" data-bind="period-label">—</span>
+            </button>
+            <button class="overview-scope__btn" data-scope="all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Acumulado total
+              <span class="overview-scope__badge" id="scope-all-count">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="kpi-grid">
+        <article class="kpi" data-kpi="referral-cost">
+          <header class="kpi__head">
+            <span class="kpi__label">Custo Indicações</span>
+            <span class="kpi__badge" data-trend="up">+0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__currency">R$</span>
+            <span class="kpi__num" data-bind="referral-cost">0</span>
+          </div>
+          <div class="kpi__sub">
+            <span><em data-bind="referral-closed">0</em> indicações fechadas</span>
+            <span class="kpi__dot">·</span>
+            <span>CAC Ind. <em data-bind="cac-referral">R$ 0</em></span>
+          </div>
+        </article>
+
+        <article class="kpi" data-kpi="closings">
+          <header class="kpi__head">
+            <span class="kpi__label">Fechamentos</span>
+            <span class="kpi__badge" data-trend="up">+0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__num" data-bind="closings">0</span>
+            <span class="kpi__unit">contratos</span>
+          </div>
+          <div class="kpi__split">
+            <div class="kpi__split-bar">
+              <div class="kpi__split-digital" style="width:0%"></div>
+            </div>
+            <div class="kpi__split-legend">
+              <span><i style="background:var(--c-accent)"></i>Digital <em data-bind="closings-digital">0</em></span>
+              <span><i style="background:var(--c-amber)"></i>Indicação <em data-bind="closings-referral">0</em></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="kpi" data-kpi="cac">
+          <header class="kpi__head">
+            <span class="kpi__label">CAC</span>
+            <span class="kpi__badge" data-trend="down">-0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__currency">R$</span>
+            <span class="kpi__num" data-bind="cac">0</span>
+          </div>
+          <div class="kpi__spark">
+            <svg viewBox="0 0 200 40" preserveAspectRatio="none" data-spark="cac"></svg>
+          </div>
+        </article>
+
+        <article class="kpi" data-kpi="cpl">
+          <header class="kpi__head">
+            <span class="kpi__label">CPL</span>
+            <span class="kpi__badge" data-trend="up">+0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__currency">R$</span>
+            <span class="kpi__num" data-bind="cpl">0</span>
+          </div>
+          <div class="kpi__spark">
+            <svg viewBox="0 0 200 40" preserveAspectRatio="none" data-spark="cpl"></svg>
+          </div>
+        </article>
+
+        <article class="kpi" data-kpi="leads">
+          <header class="kpi__head">
+            <span class="kpi__label">Leads totais</span>
+            <span class="kpi__badge" data-trend="up">+0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__num" data-bind="leads-total">0</span>
+          </div>
+          <div class="kpi__sub">
+            <span><em data-bind="leads-qualified">0</em> qualificados</span>
+            <span class="kpi__dot">·</span>
+            <span><em data-bind="conversion-rate">0%</em> conversão</span>
+          </div>
+        </article>
+
+        <article class="kpi" data-kpi="invest">
+          <header class="kpi__head">
+            <span class="kpi__label">Investimento Tráfego</span>
+            <span class="kpi__badge" data-trend="up">+0.0%</span>
+          </header>
+          <div class="kpi__value">
+            <span class="kpi__currency">R$</span>
+            <span class="kpi__num" data-bind="invest-total">0</span>
+          </div>
+          <div class="kpi__sub">
+            <span class="chip chip--meta">META <em data-bind="invest-meta">R$ 0</em></span>
+            <span class="chip chip--google">GOOGLE <em data-bind="invest-google">R$ 0</em></span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Cockpit row -->
+      <div class="cockpit">
+
+        <!-- Globe panel -->
+        <div class="panel panel--globe">
+          <header class="panel__head">
+            <div class="panel__title">
+              <h2>Mapa de Fechamentos</h2>
+              <p>Distribuição geográfica · <span data-bind="period-label">—</span></p>
+            </div>
+            <div class="panel__actions">
+              <div class="legend">
+                <span class="legend__item"><i class="legend__dot legend__dot--digital"></i>Digital</span>
+                <span class="legend__item"><i class="legend__dot legend__dot--referral"></i>Indicação</span>
+              </div>
+            </div>
+          </header>
+          <div class="globe-wrap">
+            <canvas id="globe-canvas"></canvas>
+            <div class="globe-stats">
+              <div class="globe-stat">
+                <span class="globe-stat__label">Estados ativos</span>
+                <span class="globe-stat__value" data-bind="states-count">0</span>
+              </div>
+              <div class="globe-stat">
+                <span class="globe-stat__label">Cidades atingidas</span>
+                <span class="globe-stat__value" data-bind="cities-count">0</span>
+              </div>
+              <div class="globe-stat">
+                <span class="globe-stat__label">Top processo</span>
+                <span class="globe-stat__value" data-bind="top-process">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side: ranking + funnel -->
+        <div class="cockpit__side">
+          <div class="panel panel--funnel">
+            <header class="panel__head">
+              <h2>Funil do mês</h2>
+            </header>
+            <div class="funnel" id="funnel"></div>
+          </div>
+
+          <div class="panel panel--top">
+            <header class="panel__head">
+              <h2>Top cidades</h2>
+              <span class="panel__hint" data-bind="period-label">—</span>
+            </header>
+            <ol class="ranking" id="city-ranking"></ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- Foguete: fechamentos por dia do mês -->
+      <div class="panel panel--rocket">
+        <header class="panel__head">
+          <div class="panel__title">
+            <h2>🚀 Trajetória do mês</h2>
+            <p>Fechamentos por dia · <span data-bind="period-label">—</span></p>
+          </div>
+          <div class="rocket-stats">
+            <div class="rocket-stat">
+              <span class="rocket-stat__label">Pico do mês</span>
+              <span class="rocket-stat__value" id="rocket-peak">0</span>
+            </div>
+            <div class="rocket-stat">
+              <span class="rocket-stat__label">Média / dia</span>
+              <span class="rocket-stat__value" id="rocket-avg">0</span>
+            </div>
+            <button class="chip-btn is-active" id="rocket-replay">▶ Replay</button>
+          </div>
+        </header>
+        <div class="rocket-chart">
+          <svg id="rocket-svg" viewBox="0 0 1000 220" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+
+      <!-- Bottom: trend + sources -->
+      <div class="bottom-grid">
+        <div class="panel panel--trend">
+          <header class="panel__head">
+            <div class="panel__title">
+              <h2>Evolução · 12 meses</h2>
+              <p>Fechamentos digitais e por indicação</p>
+            </div>
+            <div class="trend-toggle">
+              <button class="chip-btn is-active" data-trend-metric="closings">Fechamentos</button>
+              <button class="chip-btn" data-trend-metric="leads">Leads</button>
+              <button class="chip-btn" data-trend-metric="invest">Investimento</button>
+            </div>
+          </header>
+          <div class="trend-chart">
+            <svg id="trend-svg" viewBox="0 0 800 280" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <div class="panel panel--sources">
+          <header class="panel__head">
+            <h2>Origens</h2>
+            <span class="panel__hint" data-bind="period-label">—</span>
+          </header>
+          <div class="sources" id="sources"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= TAB: COMMERCIAL ============= -->
+    <section class="tab tab--commercial" data-tab-panel="commercial">
+      <div class="section-head">
+        <div>
+          <h1 class="section-title">Comercial</h1>
+          <p class="section-sub">Fechamentos digitais, indicações e desempenho por consultor</p>
+        </div>
+        <div class="section-head__actions">
+          <button class="btn-danger" id="btn-delete-all-closings" title="Apagar todos os fechamentos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            Apagar todos
+          </button>
+          <button class="btn-primary" id="btn-add-closing">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Fechamento
+          </button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="filter">
+          <label>Status</label>
+          <select id="filter-status" class="select"><option value="">Todos os status</option></select>
+        </div>
+        <div class="filter">
+          <label>Origem</label>
+          <select id="filter-origin" class="select"><option value="">Todas as origens</option></select>
+        </div>
+        <div class="filter">
+          <label>Cidade</label>
+          <select id="filter-city" class="select"><option value="">Todas as cidades</option></select>
+        </div>
+        <div class="filter">
+          <label>Consultor</label>
+          <select id="filter-consultant" class="select"><option value="">Todos os consultores</option></select>
+        </div>
+        <div class="filter">
+          <label>Tipo</label>
+          <select id="filter-type" class="select">
+            <option value="">Todos os tipos</option>
+            <option value="digital">Digital (Online)</option>
+            <option value="referral">Indicação</option>
+          </select>
+        </div>
+        <div class="filter filter--search">
+          <label>Buscar</label>
+          <input type="text" id="filter-search" class="input" placeholder="Cliente, cidade, telefone..." />
+        </div>
+      </div>
+
+      <div class="commercial-summary">
+        <div class="summary-card">
+          <span class="summary-card__label">Fechamentos exibidos</span>
+          <span class="summary-card__value" id="filtered-count">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Digital</span>
+          <span class="summary-card__value" id="filtered-digital">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Indicação</span>
+          <span class="summary-card__value" id="filtered-referral">0</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="closings-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Origem</th>
+              <th>Cidade / UF</th>
+              <th>Consultor</th>
+              <th>Status</th>
+              <th>Processos</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="closings-tbody"></tbody>
+        </table>
+        <div id="empty-closings" class="empty-state">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1"><circle cx="32" cy="32" r="28"/><path d="M22 32l8 8 14-16"/></svg>
+          <h3>Nenhum fechamento registrado</h3>
+          <p>Comece adicionando o primeiro fechamento do mês.</p>
+          <button class="btn-primary" onclick="document.getElementById('btn-add-closing').click()">Adicionar fechamento</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= TAB: PARTNERS ============= -->
+    <section class="tab tab--partners" data-tab-panel="partners">
+      <div class="section-head">
+        <div>
+          <h1 class="section-title">Comercial Parceiros</h1>
+          <p class="section-sub">Leads e fechamentos vindos de parceiros estratégicos</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-ghost" id="btn-manage-partners">Gerenciar parceiros</button>
+          <button class="btn-primary" id="btn-add-partner-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Lançar resultado
+          </button>
+        </div>
+      </div>
+
+      <div class="partners-summary">
+        <div class="summary-card">
+          <span class="summary-card__label">Parceiros ativos no mês</span>
+          <span class="summary-card__value" id="partners-active-count">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Leads totais via parceiros</span>
+          <span class="summary-card__value" id="partners-leads-total">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Fechamentos via parceiros</span>
+          <span class="summary-card__value" id="partners-closed-total">0</span>
+        </div>
+        <div class="summary-card summary-card--editable">
+          <span class="summary-card__label">Custo total parceiros</span>
+          <div class="summary-card__input-wrap">
+            <span class="summary-card__currency">R$</span>
+            <input type="number" step="0.01" min="0" id="partner-cost-input" class="summary-card__input" placeholder="0,00" />
+          </div>
+          <span class="summary-card__hint">clique para editar</span>
+        </div>
+        <div class="summary-card summary-card--cac">
+          <span class="summary-card__label">CAC parceiros</span>
+          <span class="summary-card__value">R$ <span id="partners-cac">0,00</span></span>
+          <span class="summary-card__hint" id="partners-cac-formula">custo ÷ fechados</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="partners-table">
+          <thead>
+            <tr>
+              <th>Parceiro</th>
+              <th class="ta-right">Leads</th>
+              <th class="ta-right">Fechados</th>
+              <th class="ta-right">Conversão</th>
+              <th class="ta-right">% do Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="partners-tbody"></tbody>
+        </table>
+        <div id="empty-partners" class="empty-state">
+          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1"><circle cx="22" cy="24" r="6"/><circle cx="42" cy="24" r="6"/><path d="M10 48c0-6 5-11 12-11s12 5 12 11M30 48c0-6 5-11 12-11s12 5 12 11"/></svg>
+          <h3>Nenhum lançamento de parceiro neste mês</h3>
+          <p>Cadastre seus parceiros e registre os leads que cada um trouxe.</p>
+          <button class="btn-primary" id="btn-empty-add-partner-stat">Lançar resultado</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= TAB: CONSULTORES ============= -->
+    <section class="tab tab--consultants" data-tab-panel="consultants">
+      <div class="section-head">
+        <div>
+          <h1 class="section-title">Consultores</h1>
+          <p class="section-sub">Performance individual · leads recebidos × fechamentos · <span data-bind="period-label">—</span></p>
+        </div>
+        <div class="section-meta">
+          <span class="meta-pill">Mês: <strong data-bind="period-label">—</strong></span>
+        </div>
+      </div>
+
+      <!-- Resumo top -->
+      <div class="commercial-summary">
+        <div class="summary-card">
+          <span class="summary-card__label">Total leads</span>
+          <span class="summary-card__value" id="cons-total-leads">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Total fechados</span>
+          <span class="summary-card__value" id="cons-total-closed">0</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-card__label">Conversão geral</span>
+          <span class="summary-card__value" id="cons-total-conv">0%</span>
+        </div>
+      </div>
+
+      <div class="cons-grid">
+        <!-- Painel: ranking visual -->
+        <div class="panel">
+          <header class="panel__head">
+            <div class="panel__title">
+              <h2>Ranking de Conversão</h2>
+              <p>Do melhor para o pior · taxa de fechamento</p>
+            </div>
+          </header>
+          <div class="cons-ranking" id="cons-ranking"></div>
+        </div>
+
+        <!-- Painel: input/edição -->
+        <div class="panel">
+          <header class="panel__head">
+            <div class="panel__title">
+              <h2>Editar leads recebidos</h2>
+              <p>Insira a quantidade de leads que cada consultor recebeu este mês</p>
+            </div>
+          </header>
+          <div class="cons-input-list" id="cons-input-list"></div>
+          <div class="cons-helper">
+            <p>💡 Os fechamentos são contados automaticamente dos registros da aba Comercial deste mês.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela detalhada -->
+      <div class="table-wrap" style="margin-top: 14px;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Consultor</th>
+              <th class="ta-right">Leads recebidos</th>
+              <th class="ta-right">Fechamentos</th>
+              <th class="ta-right">Conversão</th>
+              <th>Performance</th>
+            </tr>
+          </thead>
+          <tbody id="cons-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============= TAB: MARKETING ============= -->
+    <section class="tab tab--marketing" data-tab-panel="marketing">
+      <div class="section-head">
+        <div>
+          <h1 class="section-title">Marketing</h1>
+          <p class="section-sub">Investimento em tráfego, leads, CAC, CPL e canais sociais</p>
+        </div>
+        <div class="section-meta">
+          <span class="meta-pill">Mês: <strong data-bind="period-label">—</strong></span>
+        </div>
+      </div>
+
+      <div class="mk-grid">
+
+        <!-- Investimento -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>Investimento em Tráfego</h2>
+            <span class="panel__hint">Publicidade paga</span>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__currency">R$</span>
+              <span class="mk-big__num" data-bind="invest-total">0</span>
+            </div>
+            <div class="mk-breakdown">
+              <div class="mk-row">
+                <span class="mk-row__name">META</span>
+                <span class="mk-row__bar"><i style="--p:0%" data-bar="meta"></i></span>
+                <span class="mk-row__val" data-bind="invest-meta">R$ 0</span>
+              </div>
+              <div class="mk-row">
+                <span class="mk-row__name">GOOGLE</span>
+                <span class="mk-row__bar"><i style="--p:0%" data-bar="google"></i></span>
+                <span class="mk-row__val" data-bind="invest-google">R$ 0</span>
+              </div>
+              <div class="mk-row">
+                <span class="mk-row__name">VAGAS</span>
+                <span class="mk-row__bar"><i style="--p:0%" data-bar="vagas"></i></span>
+                <span class="mk-row__val" data-bind="invest-vagas">R$ 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leads -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>Total de Leads</h2>
+            <span class="panel__hint">META + GOOGLE</span>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__num" data-bind="leads-total">0</span>
+            </div>
+            <div class="mk-split">
+              <div class="mk-split__bar">
+                <div class="mk-split__a" style="width:0%" data-bar="leads-meta"></div>
+                <div class="mk-split__b" style="width:0%" data-bar="leads-google"></div>
+              </div>
+              <div class="mk-split__legend">
+                <span><i class="dot dot--meta"></i>META <em data-bind="leads-meta">0</em></span>
+                <span><i class="dot dot--google"></i>GOOGLE <em data-bind="leads-google">0</em></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CPL -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>CPL · Custo por Lead</h2>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__currency">R$</span>
+              <span class="mk-big__num" data-bind="cpl">0</span>
+            </div>
+            <div class="mk-mini-grid">
+              <div><span class="mini-label">CPL META</span><span class="mini-val" data-bind="cpl-meta">R$ 0</span></div>
+              <div><span class="mini-label">CPL GOOGLE</span><span class="mini-val" data-bind="cpl-google">R$ 0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Qualificados -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>Leads Qualificados</h2>
+            <span class="panel__hint">do total de leads</span>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__num" data-bind="leads-qualified">0</span>
+            </div>
+            <div class="mk-mini-grid">
+              <div><span class="mini-label">Taxa META</span><span class="mini-val" data-bind="conv-meta">0%</span></div>
+              <div><span class="mini-label">Taxa GOOGLE</span><span class="mini-val" data-bind="conv-google">0%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fechados -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>Leads Fechados</h2>
+            <span class="panel__hint">por unidade</span>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__num" data-bind="leads-closed">0</span>
+            </div>
+            <div class="mk-units">
+              <div class="mk-unit">
+                <span class="mk-unit__uf">SC</span>
+                <span class="mk-unit__val" data-bind="closed-sc">0</span>
+              </div>
+              <div class="mk-unit">
+                <span class="mk-unit__uf">CE</span>
+                <span class="mk-unit__val" data-bind="closed-ce">0</span>
+              </div>
+              <div class="mk-unit">
+                <span class="mk-unit__uf">MG</span>
+                <span class="mk-unit__val" data-bind="closed-mg">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAC -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>CAC · Custo de Aquisição</h2>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__currency">R$</span>
+              <span class="mk-big__num" data-bind="cac">0</span>
+            </div>
+            <div class="mk-spark">
+              <svg viewBox="0 0 200 60" preserveAspectRatio="none" data-spark="cac-large"></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seguidores -->
+        <div class="panel panel--wide">
+          <header class="panel__head">
+            <h2>Nº de Seguidores · Todos os canais</h2>
+            <span class="panel__hint" data-bind="followers-total">0 total</span>
+          </header>
+          <div class="channels-grid">
+            <div class="channel">
+              <div class="channel__icon channel__icon--ig">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </div>
+              <div class="channel__info">
+                <span class="channel__name">Instagram</span>
+                <span class="channel__num" data-bind="followers-instagram">0</span>
+              </div>
+            </div>
+            <div class="channel">
+              <div class="channel__icon channel__icon--tt">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.94a8.16 8.16 0 0 0 4.77 1.52V7a4.85 4.85 0 0 1-1.84-.31z"/></svg>
+              </div>
+              <div class="channel__info">
+                <span class="channel__name">TikTok</span>
+                <span class="channel__num" data-bind="followers-tiktok">0</span>
+              </div>
+            </div>
+            <div class="channel">
+              <div class="channel__icon channel__icon--fb">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </div>
+              <div class="channel__info">
+                <span class="channel__name">Facebook</span>
+                <span class="channel__num" data-bind="followers-facebook">0</span>
+              </div>
+            </div>
+            <div class="channel">
+              <div class="channel__icon channel__icon--yt">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </div>
+              <div class="channel__info">
+                <span class="channel__name">YouTube</span>
+                <span class="channel__num" data-bind="followers-youtube">0</span>
+              </div>
+            </div>
+            <div class="channel">
+              <div class="channel__icon channel__icon--kw">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+              </div>
+              <div class="channel__info">
+                <span class="channel__name">Kawai</span>
+                <span class="channel__num" data-bind="followers-kawai">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comentários positivos -->
+        <div class="panel">
+          <header class="panel__head">
+            <h2>Comentários Positivos no Google</h2>
+          </header>
+          <div class="mk-card">
+            <div class="mk-big">
+              <span class="mk-big__num" data-bind="google-reviews">0</span>
+            </div>
+            <div class="mk-rating">
+              <span class="stars">★★★★★</span>
+              <span class="mk-rating__txt">avaliações positivas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= TAB: COMPARATIVO ============= -->
+    <section class="tab tab--compare" data-tab-panel="compare">
+      <div class="section-head">
+        <div>
+          <h1 class="section-title">Comparativo</h1>
+          <p class="section-sub">Compare a performance entre dois meses · veja o que cresceu, o que caiu</p>
+        </div>
+      </div>
+
+      <div class="compare-selectors">
+        <div class="compare-selector compare-selector--a">
+          <span class="compare-selector__badge">A</span>
+          <div class="compare-selector__fields">
+            <label>Mês A (referência)</label>
+            <div class="compare-selector__row">
+              <select id="compare-month-a" class="select"></select>
+              <select id="compare-year-a" class="select"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="compare-vs">vs</div>
+
+        <div class="compare-selector compare-selector--b">
+          <span class="compare-selector__badge">B</span>
+          <div class="compare-selector__fields">
+            <label>Mês B (comparar)</label>
+            <div class="compare-selector__row">
+              <select id="compare-month-b" class="select"></select>
+              <select id="compare-year-b" class="select"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-grid" id="compare-grid">
+        <!-- preenchido pelo JS -->
+      </div>
+
+      <div class="compare-empty" id="compare-empty" style="display:none;">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="8" y="14" width="48" height="36" rx="4"/>
+          <line x1="20" y1="26" x2="20" y2="40"/>
+          <line x1="32" y1="20" x2="32" y2="40"/>
+          <line x1="44" y1="30" x2="44" y2="40"/>
+        </svg>
+        <h3>Sem dados para comparar</h3>
+        <p>Você ainda não tem dados em um dos meses selecionados.<br/>Conforme você for usando o sistema mês a mês, o comparativo fica mais rico.</p>
+      </div>
+    </section>
+
+    <!-- ============= TAB: GLOBE FULLSCREEN ============= -->
+    <section class="tab tab--globe" data-tab-panel="globe">
+      <div class="globe-fullscreen">
+        <div class="brazil-map brazil-map-wrap is-interactive" id="brazil-map">
+          <svg id="brazil-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+            <!-- contornos populados pelo JS -->
+          </svg>
+          <div class="brazil-map__legend">
+            <span class="legend__item"><i class="legend__dot legend__dot--digital"></i>Digital</span>
+            <span class="legend__item"><i class="legend__dot legend__dot--referral"></i>Indicação</span>
+          </div>
+          <div class="brazil-map-zoomlevel" id="brazil-zoomlevel">100%</div>
+          <div class="brazil-map-controls">
+            <button class="brazil-map-control" id="brazil-zoom-in" title="Aproximar (scroll)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <button class="brazil-map-control" id="brazil-zoom-out" title="Afastar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <div class="brazil-map-control--separator"></div>
+            <button class="brazil-map-control" id="brazil-zoom-reset" title="Resetar zoom">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v8h8"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="globe-overlay">
+          <div class="globe-overlay__head">
+            <h1 class="section-title">Mapa de Fechamentos</h1>
+            <p class="section-sub">Cada ponto representa um cliente fechado</p>
+          </div>
+          <div class="globe-overlay__stats">
+            <div class="overlay-stat">
+              <span class="overlay-stat__label">Total fechamentos</span>
+              <span class="overlay-stat__value" data-bind="closings-all">0</span>
+            </div>
+            <div class="overlay-stat">
+              <span class="overlay-stat__label">Estados</span>
+              <span class="overlay-stat__value" data-bind="states-count-all">0</span>
+            </div>
+            <div class="overlay-stat">
+              <span class="overlay-stat__label">Cidades</span>
+              <span class="overlay-stat__value" data-bind="cities-count-all">0</span>
+            </div>
+            <div class="overlay-stat">
+              <span class="overlay-stat__label">Indicações fechadas</span>
+              <span class="overlay-stat__value" data-bind="referrals-all">0</span>
+            </div>
+          </div>
+          <div class="globe-overlay__list" id="closings-overlay-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============= BUSCA FLUTUANTE ============= -->
+  <button class="search-fab" id="search-fab" title="Buscar processos">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <span class="search-fab__pulse"></span>
+  </button>
+
+  <!-- ============= OCR FLUTUANTE ============= -->
+  <button class="ocr-fab" id="ocr-fab" title="Importar fechamento via print (OCR)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+    <span class="ocr-fab__plus">+</span>
+  </button>
+
+  <div class="ocr-panel" id="ocr-panel">
+    <div class="ocr-panel__backdrop" data-ocr-close></div>
+    <div class="ocr-panel__inner">
+      <header class="ocr-panel__head">
+        <div class="ocr-panel__title">
+          <h3>📸 Importar fechamento por print</h3>
+          <p>Cole (Ctrl+V), arraste ou selecione prints do ReVive Workspace</p>
+        </div>
+        <button class="modal__close" data-ocr-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+
+      <div class="ocr-modes">
+        <button class="ocr-mode-btn is-active" data-ocr-mode="image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Imagem
+        </button>
+        <button class="ocr-mode-btn" data-ocr-mode="text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          Texto
+          <span class="ocr-mode-btn__badge">+ rápido</span>
+        </button>
+        <button class="ocr-mode-btn" data-ocr-mode="xlsx">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="16" y2="9"/></svg>
+          Planilha
+        </button>
+      </div>
+
+      <div class="ocr-dropzone" id="ocr-dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <p><strong>Cole o print</strong> (Ctrl+V) ou clique para selecionar</p>
+        <p class="ocr-dropzone__hint">Aceita vários ao mesmo tempo · detecta múltiplos clientes em um print</p>
+        <input type="file" id="ocr-file-input" accept="image/*" multiple hidden />
+      </div>
+
+      <div class="ocr-textmode" id="ocr-textmode" style="display:none;">
+        <textarea id="ocr-text-input" placeholder="Cole sua lista aqui. Aceita vários formatos:
+
+📌 Lista por consultor (recomendado pra muitos):
+Augusto:
+Curitiba PR - Seguro de Vida - 28/04/2026 - Indicação Parceiro - Fechado
+Joinville SC - Auxílio-Acidente - 28/04/2026 - Indicação Parceiro - Fechado
+Blumenau SC - DPVAT - 29/04/2026
+São Paulo SP - Seguro de Vida, Auxílio-Doença - 29/04/2026
+
+📌 Ou lista do ReVive (com Processo:, Cidade:, etc):
+Joelson Ferreira
+Processo: Auxílio-Acidente
+Cidade: Joinville / SC
+Consultor: Alexandro
+Fechamento: 01/04/2026
+
+💡 Cada linha vira um fechamento. Repete cidade tranquilo se tiver mais de um."></textarea>
+        <div class="ocr-textmode__actions">
+          <span class="ocr-textmode__hint">💡 Detecta múltiplos clientes automaticamente</span>
+          <button class="btn-primary" id="ocr-parse-text">Processar texto</button>
+        </div>
+      </div>
+
+      <div class="ocr-xlsxmode" id="ocr-xlsxmode" style="display:none;">
+        <div class="ocr-xlsx-container">
+          <label class="ocr-xlsx-label">
+            Selecione o arquivo .xlsx com o relatório de comissões
+          </label>
+          <button class="btn-primary" id="ocr-xlsx-btn">📊 Escolher planilha</button>
+          <input type="file" id="ocr-xlsx-input" accept=".xlsx,.xls" hidden />
+          <p class="ocr-xlsx-hint">Cada aba será importada como fechamentos do consultor correspondente.</p>
+        </div>
+      </div>
+
+      <div class="ocr-bulk-bar" id="ocr-bulk-bar" style="display:none;">
+        <span class="ocr-bulk-bar__count"><strong id="ocr-bulk-count">0</strong> prontos para salvar</span>
+        <div class="ocr-bulk-bar__actions">
+          <button class="btn-ghost" id="ocr-clear-all">Limpar tudo</button>
+          <button class="btn-primary" id="ocr-save-all">🚀 Salvar todos de uma vez</button>
+        </div>
+      </div>
+
+      <div class="ocr-queue" id="ocr-queue">
+        <!-- preenchido com os items processados -->
+      </div>
+    </div>
+  </div>
+
+  <div class="search-panel" id="search-panel">
+    <div class="search-panel__backdrop" data-search-close></div>
+    <div class="search-panel__inner">
+      <header class="search-panel__head">
+        <div class="search-panel__title">
+          <h3>Busca Inteligente</h3>
+          <p>Pergunte sobre fechamentos, processos, canais ou cidades</p>
+        </div>
+        <button class="modal__close" data-search-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+
+      <div class="search-suggestions">
+        <span class="search-suggestions__label">Tente:</span>
+        <button class="search-chip" data-search-query="fechados no meta">fechados no META</button>
+        <button class="search-chip" data-search-query="fechados no google">fechados no GOOGLE</button>
+        <button class="search-chip" data-search-query="seguro de vida">Seguro de Vida</button>
+        <button class="search-chip" data-search-query="indicação">Indicações</button>
+        <button class="search-chip" data-search-query="blumenau">Blumenau</button>
+      </div>
+
+      <div class="search-results" id="search-results">
+        <div class="search-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <p>Digite no campo abaixo para buscar</p>
+        </div>
+      </div>
+
+      <div class="search-input-wrap">
+        <svg class="search-input-wrap__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="search-input" class="search-input" placeholder="Ex: quantos fechados no Meta este mês?" autocomplete="off" />
+        <kbd class="search-kbd">ESC</kbd>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= MODALS ============= -->
+
+  <!-- Modal: New Closing -->
+  <div class="modal" id="modal-closing">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel">
+      <header class="modal__head">
+        <h3 id="modal-closing-title">Novo Fechamento</h3>
+        <button class="modal__close" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <form id="form-closing" class="form">
+        <input type="hidden" id="f-id" />
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Tipo de fechamento</label>
+            <div class="radio-group">
+              <label class="radio">
+                <input type="radio" name="type" value="digital" />
+                <span>Digital (Online)</span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="type" value="referral" checked />
+                <span>Indicação</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Data do fechamento</label>
+            <input type="date" id="f-date" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Tipo(s) de processo</label>
+            <div class="chip-picker" id="f-processes-picker"></div>
+            <div class="form-field" id="f-processes-other-wrap" style="display:none; margin-top:8px;">
+              <label>Especificar</label>
+              <input type="text" id="f-processes-other" placeholder="Descreva o processo" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Cliente</label>
+            <input type="text" id="f-client" placeholder="Nome completo" required />
+          </div>
+        </div>
+
+        <div class="form-row form-row--2">
+          <div class="form-field">
+            <label>Telefone</label>
+            <input type="text" id="f-phone" placeholder="(00) 00000-0000" />
+          </div>
+          <div class="form-field">
+            <label>Consultor</label>
+            <div class="select-with-action">
+              <select id="f-consultant" class="select"></select>
+              <button type="button" class="btn-mini" id="btn-manage-consultants" title="Gerenciar consultores">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-row--3">
+          <div class="form-field">
+            <label>UF (Estado)</label>
+            <select id="f-uf" required>
+              <option value="">Selecione...</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Cidade</label>
+            <select id="f-city" required>
+              <option value="">— escolha o estado primeiro —</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select id="f-status">
+              <option value="Fechado">Fechado</option>
+              <option value="Negociação">Negociação</option>
+              <option value="Aguardando Resposta">Aguardando Resposta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row form-row--2">
+          <div class="form-field">
+            <label>Origem</label>
+            <select id="f-origin">
+              <option value="INDICAÇÃO PARCEIRO" selected>Indicação Parceiro</option>
+              <option value="META">META</option>
+              <option value="GOOGLE">GOOGLE</option>
+              <option value="ORGÂNICO">Orgânico</option>
+              <option value="INDICAÇÃO">Indicação</option>
+              <option value="OUTRO">Outro</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Bairro</label>
+            <input type="text" id="f-neighborhood" placeholder="Opcional" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Observações</label>
+            <textarea id="f-notes" rows="2" placeholder="Opcional"></textarea>
+          </div>
+        </div>
+
+        <footer class="modal__foot">
+          <button type="button" class="btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Marketing -->
+  <div class="modal" id="modal-marketing">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel modal__panel--lg">
+      <header class="modal__head">
+        <h3>Editar dados de Marketing · <span id="mk-period-label">—</span></h3>
+        <button class="modal__close" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <form id="form-marketing" class="form">
+
+        <h4 class="form-section">Investimento em Tráfego (R$)</h4>
+        <div class="form-row form-row--3">
+          <div class="form-field"><label>META</label><input type="number" step="0.01" id="mk-meta" /></div>
+          <div class="form-field"><label>GOOGLE</label><input type="number" step="0.01" id="mk-google" /></div>
+          <div class="form-field"><label>VAGAS</label><input type="number" step="0.01" id="mk-vagas" /></div>
+        </div>
+
+        <h4 class="form-section">Leads (a soma é automática)</h4>
+        <div class="form-row form-row--2">
+          <div class="form-field"><label>Lead META</label><input type="number" id="mk-leads-meta" /></div>
+          <div class="form-field"><label>Lead GOOGLE</label><input type="number" id="mk-leads-google" /></div>
+        </div>
+
+        <h4 class="form-section">Leads Qualificados</h4>
+        <div class="form-row">
+          <div class="form-field"><label>Total qualificados no mês</label><input type="number" id="mk-qualified" /></div>
+        </div>
+
+        <h4 class="form-section">Leads Fechados (do funil de marketing — por unidade)</h4>
+        <div class="form-row form-row--3">
+          <div class="form-field"><label>Fechados SC</label><input type="number" id="mk-closed-sc" /></div>
+          <div class="form-field"><label>Fechados CE</label><input type="number" id="mk-closed-ce" /></div>
+          <div class="form-field"><label>Fechados MG</label><input type="number" id="mk-closed-mg" /></div>
+        </div>
+
+        <h4 class="form-section">Seguidores</h4>
+        <div class="form-row form-row--3">
+          <div class="form-field"><label>Instagram</label><input type="number" id="mk-ig" /></div>
+          <div class="form-field"><label>TikTok</label><input type="number" id="mk-tt" /></div>
+          <div class="form-field"><label>Facebook</label><input type="number" id="mk-fb" /></div>
+        </div>
+        <div class="form-row form-row--2">
+          <div class="form-field"><label>YouTube</label><input type="number" id="mk-yt" /></div>
+          <div class="form-field"><label>Kawai</label><input type="number" id="mk-kw" /></div>
+        </div>
+
+        <h4 class="form-section">Indicações Parceiras</h4>
+        <div class="form-row">
+          <div class="form-field"><label>Custo total com indicações no mês (R$)</label><input type="number" step="0.01" id="mk-referral-cost" /></div>
+        </div>
+
+        <h4 class="form-section">Avaliações</h4>
+        <div class="form-row">
+          <div class="form-field"><label>Comentários positivos no Google</label><input type="number" id="mk-reviews" /></div>
+        </div>
+
+        <footer class="modal__foot">
+          <button type="button" class="btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar dados</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Manage Consultants -->
+  <div class="modal" id="modal-consultants">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel">
+      <header class="modal__head">
+        <h3>Gerenciar consultores</h3>
+        <button class="modal__close" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <div class="form">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Adicionar consultor</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="new-consultant-input" placeholder="Nome do consultor" style="flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--c-border-2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--c-text);" />
+              <button type="button" class="btn-primary" id="btn-add-consultant">Adicionar</button>
+            </div>
+          </div>
+        </div>
+        <h4 class="form-section">Consultores cadastrados</h4>
+        <ul class="manage-list" id="consultants-list"></ul>
+        <footer class="modal__foot">
+          <button type="button" class="btn-ghost" data-close>Fechar</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Manage Partners -->
+  <div class="modal" id="modal-partners">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel">
+      <header class="modal__head">
+        <h3>Gerenciar parceiros</h3>
+        <button class="modal__close" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <div class="form">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Adicionar parceiro</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="new-partner-input" placeholder="Nome do parceiro" style="flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--c-border-2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--c-text);" />
+              <button type="button" class="btn-primary" id="btn-add-partner">Adicionar</button>
+            </div>
+          </div>
+        </div>
+        <h4 class="form-section">Parceiros cadastrados</h4>
+        <ul class="manage-list" id="partners-list"></ul>
+        <footer class="modal__foot">
+          <button type="button" class="btn-ghost" data-close>Fechar</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Lançar resultado de parceiro -->
+  <div class="modal" id="modal-partner-stat">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel">
+      <header class="modal__head">
+        <h3>Lançar resultado · <span id="partner-stat-period">—</span></h3>
+        <button class="modal__close" data-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <form id="form-partner-stat" class="form">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Parceiro</label>
+            <div class="select-with-action">
+              <select id="ps-partner" required></select>
+              <button type="button" class="btn-mini" id="btn-manage-partners-from-form" title="Gerenciar parceiros">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-row form-row--2">
+          <div class="form-field"><label>Leads que vieram do parceiro</label><input type="number" min="0" id="ps-leads" required /></div>
+          <div class="form-field"><label>Leads fechados</label><input type="number" min="0" id="ps-closed" required /></div>
+        </div>
+        <footer class="modal__foot">
+          <button type="button" class="btn-ghost" data-close>Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Tesseract.js (OCR — só baixa quando o painel é aberto) -->
+
+  <!-- App -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/globe.js"></script>
+  <script src="assets/js/brazil-map.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/ocr.js"></script>
+  <script src="assets/js/xlsx-import.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
